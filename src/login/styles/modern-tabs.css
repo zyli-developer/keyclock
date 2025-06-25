@@ -1,0 +1,274 @@
+/* 现代化 Tab 组件样式 */
+
+/* 基础容器样式 */
+.modern-tabs-container {
+  /* 布局 */
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 24rem; /* 384px */
+  margin: 0 auto;
+  
+  /* 外观 */
+  background-color: #fafaf9; /* stone-50 */
+  border: 1px solid #e7e5e4; /* stone-200 */
+  border-radius: 29px;
+  padding: 4px;
+  
+  /* 阴影和过渡 */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 性能优化 */
+  contain: layout style;
+  will-change: transform;
+}
+
+/* 活跃背景滑块 */
+.modern-tabs-slider {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background-color: #ffffff;
+  border-radius: 31px;
+  box-shadow: 
+    0 1px 3px 0 rgba(0, 0, 0, 0.1),
+    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  
+  /* 动画 */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, width;
+  
+  /* 确保在正确的层级 */
+  z-index: 1;
+}
+
+/* Tab 按钮基础样式 */
+.modern-tab-button {
+  /* 布局 */
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px; /* h-9 */
+  
+  /* 文字 */
+  font-family: 'OPPOSans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 18px; /* text-lg */
+  font-weight: 400; /* font-normal */
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  
+  /* 外观 */
+  border: none;
+  border-radius: 31px;
+  background: transparent;
+  cursor: pointer;
+  padding: 0 8px;
+  
+  /* 过渡 */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 交互 */
+  outline: none;
+  user-select: none;
+  
+  /* 层级 */
+  z-index: 2;
+}
+
+/* 活跃状态 */
+.modern-tab-button--active {
+  color: #171717; /* neutral-900 */
+  font-weight: 500;
+}
+
+/* 非活跃状态 */
+.modern-tab-button--inactive {
+  color: #737373; /* neutral-500 */
+}
+
+/* 悬停状态 */
+.modern-tab-button--inactive:hover:not(:disabled) {
+  color: #404040; /* neutral-700 */
+}
+
+/* 焦点状态 */
+.modern-tab-button:focus-visible {
+  outline: 2px solid rgba(59, 130, 246, 0.2);
+  outline-offset: 2px;
+}
+
+/* 禁用状态 */
+.modern-tab-button:disabled {
+  color: #a3a3a3; /* neutral-400 */
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* 按下状态 - 仅对非活跃项 */
+.modern-tab-button--inactive:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+/* 文字容器 */
+.modern-tab-text {
+  position: relative;
+  z-index: 3;
+  padding: 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 响应式设计 */
+@media (max-width: 640px) {
+  .modern-tabs-container {
+    max-width: 100%;
+    margin: 0;
+  }
+  
+  .modern-tab-button {
+    font-size: 16px;
+    height: 32px;
+  }
+  
+  .modern-tab-text {
+    padding: 0 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .modern-tab-button {
+    font-size: 14px;
+    height: 28px;
+  }
+  
+  .modern-tabs-container {
+    padding: 3px;
+  }
+  
+  .modern-tabs-slider {
+    top: 3px;
+    bottom: 3px;
+  }
+}
+
+/* 尺寸变体 */
+.modern-tabs-container--small {
+  height: 36px; /* h-9 */
+  padding: 2px;
+}
+
+.modern-tabs-container--small .modern-tab-button {
+  height: 28px;
+  font-size: 14px;
+}
+
+.modern-tabs-container--small .modern-tabs-slider {
+  top: 2px;
+  bottom: 2px;
+}
+
+.modern-tabs-container--large {
+  height: 56px; /* h-14 */
+  padding: 6px;
+}
+
+.modern-tabs-container--large .modern-tab-button {
+  height: 44px;
+  font-size: 20px;
+}
+
+.modern-tabs-container--large .modern-tabs-slider {
+  top: 6px;
+  bottom: 6px;
+}
+
+/* 动画关键帧 */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* 滑块动画 */
+.modern-tabs-slider--animating {
+  animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 无障碍支持 */
+@media (prefers-reduced-motion: reduce) {
+  .modern-tabs-container,
+  .modern-tabs-slider,
+  .modern-tab-button {
+    transition: none;
+    animation: none;
+  }
+}
+
+/* 高对比度模式支持 */
+@media (prefers-contrast: high) {
+  .modern-tabs-container {
+    border-width: 2px;
+    border-color: #000000;
+  }
+  
+  .modern-tabs-slider {
+    border: 2px solid #000000;
+  }
+  
+  .modern-tab-button--active {
+    color: #000000;
+    font-weight: 600;
+  }
+  
+  .modern-tab-button--inactive {
+    color: #666666;
+  }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+  .modern-tabs-container {
+    background-color: #292524; /* stone-800 */
+    border-color: #44403c; /* stone-700 */
+  }
+  
+  .modern-tabs-slider {
+    background-color: #1c1917; /* stone-900 */
+  }
+  
+  .modern-tab-button--active {
+    color: #f5f5f4; /* stone-100 */
+  }
+  
+  .modern-tab-button--inactive {
+    color: #a8a29e; /* stone-400 */
+  }
+  
+  .modern-tab-button--inactive:hover:not(:disabled) {
+    color: #d6d3d1; /* stone-300 */
+  }
+  
+  .modern-tab-button:disabled {
+    color: #57534e; /* stone-600 */
+  }
+}
