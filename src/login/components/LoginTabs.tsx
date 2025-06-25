@@ -9,55 +9,43 @@ interface LoginTabsProps {
 export default function LoginTabs({ activeTab, onTabChange, className = "" }: LoginTabsProps) {
   const tabs = [
     { key: "sms", label: "验证码登录" },
-    { key: "account", label: "账号登录" },
-    { key: "sso", label: "SSO登录" }
+    { key: "account", label: "账号登录" }
   ];
 
   return (
     <div className={`w-full max-w-md mx-auto ${className}`}>
-      {/* 容器 - 复刻原始设计 */}
-      <div className="relative bg-stone-50 rounded-[29px] h-11 p-1 flex">
-        {/* 活跃背景滑块 */}
+      {/* 使用提供的 HTML 结构 */}
+      <div className="w-96 h-11 relative bg-stone-50 rounded-[29px]">
+        {/* 验证码登录 Tab */}
         <div 
-          className="absolute top-1 bottom-1 bg-white rounded-[31px] shadow-sm transition-all duration-300 ease-out"
-          style={{
-            width: `${100 / tabs.length}%`,
-            left: `${(tabs.findIndex(tab => tab.key === activeTab) * 100) / tabs.length}%`,
-            transform: 'translateX(0%)'
-          }}
-        />
-        
-        {/* Tab 按钮 */}
-        {tabs.map((tab, index) => {
-          const isActive = activeTab === tab.key;
-          const isDisabled = tab.key === "sso"; // SSO 暂时禁用
-          
-          return (
-            <button
-              key={tab.key}
-              disabled={isDisabled}
-              className={`
-                relative flex-1 h-9 flex items-center justify-center
-                text-lg font-normal font-['OPPOSans'] rounded-[31px]
-                transition-all duration-200 ease-out
-                focus:outline-none focus:ring-2 focus:ring-blue-500/20
-                disabled:opacity-50 disabled:cursor-not-allowed
-                ${isActive 
-                  ? 'text-neutral-900 z-10' 
-                  : isDisabled 
-                    ? 'text-neutral-400'
-                    : 'text-neutral-500 hover:text-neutral-700'
-                }
-                ${!isActive && !isDisabled ? 'active:scale-[0.98]' : ''}
-              `}
-              onClick={() => !isDisabled && onTabChange(tab.key)}
-            >
-              <span className="relative z-10 px-2 truncate">
-                {tab.label}
-              </span>
-            </button>
-          );
-        })}
+          className={`w-36 h-9 left-[4px] top-[4px] absolute rounded-[31px] cursor-pointer transition-all duration-200 ${
+            activeTab === "sms" ? "bg-white shadow-sm" : "hover:bg-white/30"
+          }`}
+          onClick={() => onTabChange("sms")}
+        >
+          <div className={`left-[26.50px] top-[8px] absolute text-center justify-start text-lg font-normal font-['OPPOSans'] transition-colors duration-200 ${
+            activeTab === "sms" ? "text-neutral-900" : "text-neutral-500 hover:text-neutral-700"
+          }`}>
+            验证码登录
+          </div>
+        </div>
+
+        {/* 分隔线 */}
+        <div className="w-0 h-2.5 left-[148px] top-[18px] absolute outline outline-1 outline-offset-[-0.50px] outline-neutral-500"></div>
+
+        {/* 账号登录 Tab */}
+        <div 
+          className={`w-36 h-9 left-[148px] top-[4px] absolute rounded-xl cursor-pointer transition-all duration-200 ${
+            activeTab === "account" ? "bg-white shadow-sm" : "hover:bg-white/30"
+          }`}
+          onClick={() => onTabChange("account")}
+        >
+          <div className={`left-[35.50px] top-[8px] absolute text-center justify-start text-lg font-normal font-['OPPOSans'] transition-colors duration-200 ${
+            activeTab === "account" ? "text-neutral-900" : "text-neutral-500 hover:text-neutral-700"
+          }`}>
+            账号登录
+          </div>
+        </div>
       </div>
     </div>
   );
