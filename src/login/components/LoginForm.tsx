@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { KcContext } from "../KcContext";
+import OptimizedTabs from "./OptimizedTabs";
 
 interface LoginFormProps {
   onSubmit: (data: any) => void;
@@ -116,36 +117,6 @@ const Button = ({
     </button>
   );
 };
-
-// Tabs组件
-const Tabs = ({ 
-  items, 
-  activeKey, 
-  onChange 
-}: {
-  items: Array<{ key: string; label: string }>;
-  activeKey: string;
-  onChange: (key: string) => void;
-}) => (
-  <div className="bg-[#F8FAFC] rounded-2xl p-1 border border-[#E2E8F0] shadow-sm">
-    <div className="grid grid-cols-2 gap-1">
-      {items.map((item) => (
-        <button
-          key={item.key}
-          className={`py-3 px-4 text-[16px] font-medium rounded-xl transition-all duration-200 ${
-            activeKey === item.key
-              ? "text-[#1a1a1a] bg-white shadow-sm border border-white"
-              : "text-[#64748B] hover:text-[#475569] hover:bg-white/50"
-          }`}
-          onClick={() => onChange(item.key)}
-          type="button"
-        >
-          {item.label}
-        </button>
-      ))}
-    </div>
-  </div>
-);
 
 export default function LoginForm({ onSubmit, onSendOTP, loading = false, error = "", kcContext }: LoginFormProps) {
   const [activeTab, setActiveTab] = useState("sms");
@@ -300,11 +271,14 @@ export default function LoginForm({ onSubmit, onSendOTP, loading = false, error 
         </div>
       )}
 
-      {/* 登录方式切换 */}
-      <Tabs 
+      {/* 优化后的登录方式切换 */}
+      <OptimizedTabs 
         items={tabItems}
         activeKey={activeTab}
         onChange={setActiveTab}
+        variant="default"
+        size="default"
+        className="w-full"
       />
 
       {/* 登录表单 */}
