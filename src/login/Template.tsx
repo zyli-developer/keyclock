@@ -1,7 +1,7 @@
 import { clsx } from "keycloakify/tools/clsx";
 import { usePrepareTemplate } from "keycloakify/login";
 import { type TemplateProps } from "keycloakify/login/TemplateProps";
-import { useGetClassName } from "keycloakify/login/lib/useGetClassName";
+import { useGetClassName } from "keycloakify/login";
 import type { KcContext } from "./KcContext";
 import type { I18n } from "./i18n";
 
