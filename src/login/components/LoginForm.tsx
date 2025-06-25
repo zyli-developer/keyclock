@@ -64,7 +64,7 @@ const FormInput = ({
   </div>
 );
 
-// 按钮组件
+// 按钮组件 - 使用新的设计样式
 const Button = ({ 
   children, 
   type = "button", 
@@ -84,21 +84,43 @@ const Button = ({
   onClick?: () => void;
   className?: string;
 }) => {
-  const baseClasses = "font-semibold rounded-xl transition-all duration-300 flex items-center justify-center gap-2";
+  const baseClasses = "inline-flex justify-center items-center gap-2.5 overflow-hidden font-normal font-['Inter'] leading-normal transition-all duration-200";
   
   const sizeClasses = {
-    small: "px-4 h-10 text-[14px]",
-    default: "px-6 h-14 text-[16px]",
-    large: "px-8 h-16 text-[18px]"
+    small: "px-3 py-1 h-10 text-[14px]",
+    default: "px-3.5 py-1.5 h-12 text-base",
+    large: "px-3.5 py-1.5 h-12 text-base"
   };
 
   const variantClasses = {
     primary: disabled || loading
-      ? "bg-[#F1F5F9] text-[#94A3B8] cursor-not-allowed"
-      : "bg-gradient-to-r from-[#A7BEFF] to-[#8B5CF6] hover:from-[#9333EA] hover:to-[#7C3AED] text-white shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]",
+      ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+      : "bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98]",
     secondary: "bg-[#F8FAFC] text-[#64748B] border-2 border-[#E2E8F0] hover:bg-white hover:text-[#475569] hover:border-[#CBD5E1]",
     outline: "bg-transparent text-[#A7BEFF] border-2 border-[#A7BEFF] hover:bg-[#A7BEFF] hover:text-white"
   };
+
+  // 根据新设计的样式
+  if (variant === "primary") {
+    return (
+      <button
+        type={type}
+        disabled={disabled || loading}
+        onClick={onClick}
+        className={`w-96 h-12 px-3.5 py-1.5 ${disabled || loading ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-purple-600 hover:bg-purple-700 active:bg-purple-800'} rounded-3xl inline-flex justify-center items-center gap-2.5 overflow-hidden transition-all duration-200 ${!disabled && !loading ? 'hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98]' : ''} ${className}`}
+      >
+        {loading && (
+          <svg className="animate-spin w-5 h-5" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+          </svg>
+        )}
+        <div className="text-center justify-start text-white text-base font-normal font-['Inter'] leading-normal">
+          {children}
+        </div>
+      </button>
+    );
+  }
 
   return (
     <button
@@ -414,15 +436,13 @@ export default function LoginForm({ onSubmit, onSendOTP, loading = false, error 
           )}
         </div>
 
-        {/* 登录按钮 */}
-        <div className="pt-2">
+        {/* 登录按钮 - 使用新的设计样式 */}
+        <div className="pt-2 flex justify-center">
           <Button
             type="submit"
             variant="primary"
-            size="large"
             disabled={!canSubmit}
             loading={loading}
-            className="w-full"
           >
             {loading ? "登录中..." : "登录"}
           </Button>
