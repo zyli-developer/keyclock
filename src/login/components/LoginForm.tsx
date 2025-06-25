@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
+import type { KcContext } from "../KcContext";
 
 interface LoginFormProps {
   onSubmit: (data: any) => void;
+  onSendOTP: (phoneOrEmail: string) => Promise<boolean>;
   loading?: boolean;
+  error?: string;
+  kcContext: KcContext;
 }
 
 // 输入框组件
@@ -143,18 +147,20 @@ const Tabs = ({
   </div>
 );
 
-export default function LoginForm({ onSubmit, loading = false }: LoginFormProps) {
+export default function LoginForm({ onSubmit, onSendOTP, loading = false, error = "", kcContext }: LoginFormProps) {
   const [activeTab, setActiveTab] = useState("sms");
   const [formData, setFormData] = useState({
     phone: "",
     email: "",
     smsCode: "",
     password: "",
-    agreed: false
+    agreed: false,
+    rememberMe: false
   });
   const [showPassword, setShowPassword] = useState(false);
   const [countdown, setCountdown] = useState(0);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [sendingOTP, setSendingOTP] = useState(false);
 
   // 倒计时效果
   useEffect(() => {
@@ -215,12 +221,20 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
   };
 
   // 发送验证码
-  const handleSendCode = () => {
+  const handleSendCode = async () => {
     const inputType = detectInputType(formData.phone);
     if (inputType !== "unknown" && countdown === 0) {
-      setCountdown(60);
-      // 这里可以调用发送验证码的API
-      console.log("发送验证码到:", formData.phone);
+      setSendingOTP(true);
+      try {
+        await onSendOTP(formData.phone);
+        setCountdown(60);
+        console.log("验证码发送成功");
+      } catch (error) {
+        console.error("发送验证码失败:", error);
+        setErrors(prev => ({ ...prev, phone: "发送验证码失败，请重试" }));
+      } finally {
+        setSendingOTP(false);
+      }
     }
   };
 
@@ -249,7 +263,7 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
     { key: "account", label: "账号登录" }
   ];
 
-  const canSendCode = formData.phone && detectInputType(formData.phone) !== "unknown" && countdown === 0;
+  const canSendCode = formData.phone && detectInputType(formData.phone) !== "unknown" && countdown === 0 && !sendingOTP;
   const canSubmit = activeTab === "sms" 
     ? formData.phone && formData.smsCode && formData.agreed
     : formData.email && formData.password && formData.agreed;
@@ -275,6 +289,16 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
           </div>
         </div>
       </div>
+
+      {/* 错误提示 */}
+      {error && (
+        <div className="bg-[#FEF2F2] border border-[#FECACA] rounded-xl p-4 flex items-center space-x-3">
+          <svg className="w-5 h-5 text-[#EF4444] flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+          </svg>
+          <span className="text-[#EF4444] text-[14px] font-medium">{error}</span>
+        </div>
+      )}
 
       {/* 登录方式切换 */}
       <Tabs 
@@ -324,10 +348,11 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
                   variant="outline"
                   size="default"
                   disabled={!canSendCode}
+                  loading={sendingOTP}
                   onClick={handleSendCode}
                   className="whitespace-nowrap"
                 >
-                  {countdown > 0 ? `${countdown}s` : "发送验证码"}
+                  {sendingOTP ? "发送中..." : countdown > 0 ? `${countdown}s` : "发送验证码"}
                 </Button>
               </div>
             </div>
@@ -372,6 +397,19 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
                 </button>
               }
             />
+
+            {/* 记住我选项 */}
+            {!kcContext.realm.rememberMeDisabled && (
+              <div className="flex items-center space-x-3">
+                <input
+                  type="checkbox"
+                  checked={formData.rememberMe}
+                  onChange={(e) => updateFormData("rememberMe", e.target.checked)}
+                  className="w-4 h-4 rounded border-2 border-[#CBD5E1] accent-[#A7BEFF] focus:ring-2 focus:ring-[#A7BEFF]/20 transition-all duration-200"
+                />
+                <span className="text-[14px] text-[#475569]">记住我</span>
+              </div>
+            )}
           </>
         )}
 
@@ -415,6 +453,18 @@ export default function LoginForm({ onSubmit, loading = false }: LoginFormProps)
             {loading ? "登录中..." : "登录"}
           </Button>
         </div>
+
+        {/* 忘记密码链接 */}
+        {activeTab === "account" && kcContext.realm.resetPasswordAllowed && (
+          <div className="text-center">
+            <a
+              href={kcContext.url.loginResetCredentialsUrl}
+              className="text-[#A7BEFF] hover:text-[#8B5CF6] text-[14px] font-medium transition-colors"
+            >
+              忘记密码？
+            </a>
+          </div>
+        )}
       </form>
     </div>
   );
