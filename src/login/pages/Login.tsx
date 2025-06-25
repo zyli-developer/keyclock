@@ -1,13 +1,13 @@
 import { useState } from "react";
 import type { PageProps } from "keycloakify/login/pages/PageProps";
-import { useGetClassName } from "keycloakify/login/useGetClassName";
+import { getKcClsx } from "keycloakify/login/lib/kcClsx";
 import type { KcContext } from "../KcContext";
 import type { I18n } from "../i18n";
 
 export default function Login(props: PageProps<Extract<KcContext, { pageId: "login.ftl" }>, I18n>) {
     const { kcContext, i18n, doUseDefaultCss, Template, classes } = props;
 
-    const { getClassName } = useGetClassName({
+    const { kcClsx } = getKcClsx({
         doUseDefaultCss,
         classes
     });
