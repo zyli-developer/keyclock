@@ -2,18 +2,38 @@ import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
 import { KcPage } from "./kc.gen";
 
-// The following block can be uncommented to test a specific page with `yarn dev`
-// Don't forget to comment back or your bundle size will increase
-/*
+// 取消注释以下代码块来测试特定页面
 import { getKcContextMock } from "./login/KcPageStory";
 
 if (import.meta.env.DEV) {
     window.kcContext = getKcContextMock({
-        pageId: "register.ftl",
-        overrides: {}
+        pageId: "login.ftl",
+        overrides: {
+            realm: {
+                loginWithEmailAllowed: true,
+                registrationAllowed: true,
+                resetPasswordAllowed: true,
+                rememberMeDisabled: false
+            },
+            social: {
+                providers: [
+                    {
+                        alias: "google",
+                        providerId: "google",
+                        displayName: "Google",
+                        loginUrl: "#"
+                    },
+                    {
+                        alias: "github", 
+                        providerId: "github",
+                        displayName: "GitHub",
+                        loginUrl: "#"
+                    }
+                ]
+            }
+        }
     });
 }
-*/
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
